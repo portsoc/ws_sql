@@ -1,6 +1,7 @@
 /*
  * This module provides a random first name or a random last name, generated from a list
  * kindly provided by http://listofrandomnames.com/
+ * tweaked towards Star Wars.
  */
 
 module.exports.randomFirstName = function () {
