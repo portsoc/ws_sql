@@ -8,7 +8,7 @@ module.exports.randomFirstName = function () {
 };
 
 module.exports.randomLastName = function () {
-  return lnames[Math.floor(Math.random()*fnames.length)];
+  return lnames[Math.floor(Math.random()*lnames.length)];
 };
 
 const lnames = [

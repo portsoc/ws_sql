@@ -33,3 +33,4 @@ rules:
   prefer-promise-reject-errors: off
   no-throw-literal: off
   no-mixed-operators: off
+  object-curly-newline: off

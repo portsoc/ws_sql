@@ -1,51 +1,21 @@
 /*
  * insert a new random person
+ * this doesn't give any address to the new contacts, feel free to add that
  */
 
-const mysql = require('mysql2');
-
-const config = require('./config.json');
+const contacts = require('./sql-contact-list');
 const names = require('./names');
 
-// create a connection to the database
-const sql = mysql.createConnection(config.mysql);
+async function main() {
+  const fname = names.randomFirstName();
+  const lname = names.randomLastName();
+  const phone = '0' + Math.floor(Math.random()*8999999999+1000000000); // random 10-digit number
 
-// handle unexpected errors by just logging them
-sql.on('error', (err) => {
-  console.error(err);
-  sql.end();
-});
+  await contacts.insert(fname, lname, phone);
+  console.log('inserted ' + fname + ' ' + lname);
 
-// generate a new random person
-const person = newRandomPerson();
-
-// make the insert query
-const insertQuery = sql.format('INSERT INTO contact SET ? ;', person);
-
-// now run the query
-sql.query(insertQuery, (err) => {
-  if (err) {
-    error('failed insert', err);
-    return;
-  }
-  console.log('inserted ' + person.fname + ' ' + person.lname);
-  sql.end();
-});
-
-// the program ends here
-
-
-// helpful functions
-
-function error(msg, error) {
-  console.error(msg + ': ' + error);
-  sql.end();
+  // close database connections that otherwise prevent Node from exiting
+  contacts.shutDown();
 }
 
-function newRandomPerson() {
-  const newPerson = {};
-  newPerson.fname = names.randomFirstName();
-  newPerson.lname = names.randomLastName();
-  newPerson.phone = '0' + Math.floor(Math.random()*8999999999+1000000000); // random 10-digit number
-  return newPerson;
-}
+main();
