@@ -7,7 +7,7 @@ const config = require('./config.json');
 
 async function getContactsLength() {
   const sql = await init();
-  const [rows] = await sql.query('select count(*) as count from Contact');
+  const [rows] = await sql.query('SELECT COUNT(*) AS count FROM Contact');
   return Number(rows[0].count);
 }
 
@@ -16,7 +16,7 @@ async function listContacts() {
   const sql = await init();
 
   // prepare query, always list people by last name
-  const query = 'select fname, lname, phone, address from contact order by lname, fname, phone';
+  const query = 'SELECT fname, lname, phone, address FROM Contact ORDER BY lname, fname, phone';
   const [rows] = await sql.query(query);
   return rows;
 }
@@ -24,7 +24,7 @@ async function listContacts() {
 
 async function insertContact(fname, lname, phone, address) {
   const sql = await init();
-  const insertQuery = sql.format('INSERT INTO contact SET ? ;', { fname, lname, phone, address });
+  const insertQuery = sql.format('INSERT INTO Contact SET ? ;', { fname, lname, phone, address });
   await sql.query(insertQuery);
 }
 
@@ -37,7 +37,7 @@ async function insertMultiple(persons) {
   try {
     await sql.beginTransaction();
     for (const p of persons) {
-      const insertQuery = sql.format('INSERT INTO contact SET ? ;', {
+      const insertQuery = sql.format('INSERT INTO Contact SET ? ;', {
         fname: p.fname,
         lname: p.lname,
         phone: p.phone,
@@ -57,9 +57,9 @@ async function searchContacts(search) {
   const sql = await init();
 
   const filter = '%' + search + '%';
-  const query = sql.format(`select fname, lname, phone, address from contact
-                            where fname like ? or lname like ?
-                            order by lname, fname, phone`, [filter, filter]);
+  const query = sql.format(`SELECT fname, lname, phone, address FROM Contact
+                            WHERE fname LIKE ? OR lname LIKE ?
+                            ORDER BY lname, fname, phone`, [filter, filter]);
   const [rows] = await sql.query(query);
   return rows;
 }
