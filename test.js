@@ -1,31 +1,26 @@
 'use strict';
 
 const fs = require('fs');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 
 /**
  * In the `worksheet` folder, make a module called `cardb.js`
  * that implements a simple database of cars, as defined below.
  *
- * The module exports two functions:
+ * The module exports two asynchronous functions:
  *  1. `saveCar` with the following parameters: `reg`, `make`,
- *     `model`, `year`, `price`, and `cb`. The function stores
- *     the information (except `cb`) in a suitable database table
- *     that you create. When it's done, the function must call
- *     the callback `cb()`. In case of an error, it should call
- *     `cb('error')`, possibly replacing `'error'` with a better
- *     error message.
+ *     `model`, `year`, and `price`. The function stores
+ *     the information in a suitable database table
+ *     that you create.
  *
- *  2. `getAveragePrice` with two parameters: `year` and `cb`.
- *     The function should find out the average price of all known cars
- *     from the given year. When done, it will call `cb(null, price)` where
- *     `price` is the computed average price. In case of an error (such as
- *     that we don't have any cars from the given year) it should call
- *     `cb('error')` or another error message to indicate that it failed.
+ *  2. `getAveragePrice` with one parameter: `year`.
+ *     The function should return the average price of all known cars
+ *     from the given year. In case of an error (such as that we don't
+ *     have any cars from the given year) it should return `null`.
  *
  * Put your database initialization SQL code in `worksheet/cardb_init.sql`.
- * Run the database initialization code in your MySQL.
+ * Run the database initialization code in your MySQL so your database is ready for testing.
  *
  * Put your database configuration in `worksheet/config.json`.
  * Inside the `mysql` object in `config.json` you should have
@@ -91,130 +86,91 @@ test(
 
 test(
   'Clear the database',
-  () => {
+  async () => {
     const config = require('./worksheet/config.json'); // eslint-disable-line global-require
-    const sql = mysql.createConnection(config.mysql);
+
     expect(2);
     stop();
-    sql.query(sql.format('select count(*) from ??', [config.mysql.table]), (err, data) => {
-      if (err) {
-        ok(false, 'Error checking that table ' + config.mysql.table + ' exists: ' + err);
-      } else {
-        ok('count(*)' in data[0], 'Table ' + config.mysql.table + ' exists');
-      }
-
-      sql.query(sql.format('delete from ??', [config.mysql.table]), (err) => {
-        if (err) {
-          ok(false, 'Error deleting data from table ' + config.mysql.table + ': ' + err);
-        } else {
-          ok(true, 'Table ' + config.mysql.table + ' cleared');
-        }
-        start();
-      });
-    });
+    try {
+      const sql = await mysql.createConnection(config.mysql);
+      const [rows] = await sql.query(sql.format('select count(*) from ??', [config.mysql.table]));
+      ok('count(*)' in rows[0], 'Table ' + config.mysql.table + ' exists');
+      await sql.query(sql.format('delete from ??', [config.mysql.table]));
+      ok(true, 'Table ' + config.mysql.table + ' cleared');
+    } catch (e) {
+      console.error(e);
+      ok(false, 'SQL error clearing table ' + config.mysql.table + ': ' + e);
+    }
+    start();
   },
 );
 
 
 test(
   'saveCar',
-  () => {
+  async () => {
     const cardb = require('./worksheet/cardb'); // eslint-disable-line global-require
     const config = require('./worksheet/config.json'); // eslint-disable-line global-require
-    const sql = mysql.createConnection(config.mysql);
-    expect(9);
+
+    expect(3);
     stop();
-    const timeout = setTimeout(() => {
-      ok(false, 'Timeout - are you calling the callbacks?');
-      start();
-    }, 3000);
-    cardb.saveCar('han 5010', 'Ford', 'Harrison', 1980, 8999.99, (err) => {
-      if (checkError('saving car', err, timeout)) return;
+    try {
+      const sql = await mysql.createConnection(config.mysql);
+      let rows;
 
-      sql.query(sql.format('select count(*) from ??', [config.mysql.table]), (err, data) => {
-        if (checkError('checking count', err, timeout)) return;
+      await cardb.saveCar('han 5010', 'Ford', 'Harrison', 1980, 8999.99);
+      [rows] = await sql.query(sql.format('select count(*) from ??', [config.mysql.table]));
+      equal(rows[0]['count(*)'], 1, 'Expecting one car in the table');
 
-        equal(data[0]['count(*)'], 1, 'Expecting one car in the table');
+      // beware sql injection with spurious " and '
+      await cardb.saveCar('bn18 qqq"', 'Brand', 'New', 2018, 15000);
+      [rows] = await sql.query(sql.format('select count(*) from ??', [config.mysql.table]));
+      equal(rows[0]['count(*)'], 2, 'Expecting two cars in the table');
 
-        // beware sql injection with spurious " and '
-        cardb.saveCar('bn18 qqq"', 'Brand', 'New', 2018, 15000, (err) => {
-          if (checkError('saving car', err, timeout)) return;
+      await cardb.saveCar('abcd efg', 'Luxurius', 'Novus\'', 2018, 47000);
+      [rows] = await sql.query(sql.format('select count(*) from ??', [config.mysql.table]));
+      equal(rows[0]['count(*)'], 3, 'Expecting three cars in the table');
+    } catch (e) {
+      console.error(e);
+      ok(false, 'Error saving car: ' + e);
+    }
 
-          sql.query(sql.format('select count(*) from ??', [config.mysql.table]), (err, data) => {
-            if (checkError('checking count', err, timeout)) return;
-
-            equal(data[0]['count(*)'], 2, 'Expecting two cars in the table');
-
-            cardb.saveCar('abcd efg', 'Luxurius', 'Novus\'', 2018, 47000, (err) => {
-              if (checkError('saving car', err, timeout)) return;
-
-              sql.query(sql.format('select count(*) from ??', [config.mysql.table]), (err, data) => {
-                if (checkError('checking count', err, timeout)) return;
-
-                equal(data[0]['count(*)'], 3, 'Expecting three cars in the table');
-                start();
-                clearTimeout(timeout);
-              });
-            });
-          });
-        });
-      });
-    });
+    start();
   },
 );
 
 
 test(
   'getAveragePrice',
-  () => {
+  async () => {
     // test average for one car
     // test average for two cars
     // test average for nonexistent year
     const cardb = require('./worksheet/cardb'); // eslint-disable-line global-require
-    expect(10);
+
+    expect(5);
     stop();
-    const timeout = setTimeout(() => {
-      ok(false, 'Timeout - are you calling the callbacks?');
-      start();
-    }, 3000);
-    cardb.getAveragePrice(1980, (err, avg) => {
-      if (checkError('getting average', err, timeout)) return;
+
+    try {
+      let avg = await cardb.getAveragePrice(1980);
       strictEqual(avg, 8999.99, 'the average price of cars from 1980 is 8999.99');
 
-      cardb.getAveragePrice(2018, (err, avg) => {
-        if (checkError('getting average', err, timeout)) return;
-        strictEqual(avg, 31000, 'the average price of cars from 2018 is 31k');
+      avg = await cardb.getAveragePrice(2018);
+      strictEqual(avg, 31000, 'the average price of cars from 2018 is 31k');
 
-        cardb.getAveragePrice(3000, (err, avg) => {
-          ok(err != null, 'no cars from 3000: if the query does not return anything, treat it as an error');
-          ok(avg == null, 'in case of error, must not return an average');
+      avg = await cardb.getAveragePrice(3000);
+      strictEqual(avg, null, 'no cars from 3000, the call should return null');
 
-          cardb.getAveragePrice('\'30', (err, avg) => {
-            ok(err != null, 'no cars from \'30 - beware sql injection');
-            ok(avg == null, 'in case of error, must not return an average');
+      avg = await cardb.getAveragePrice('\'30');
+      strictEqual(avg, null, 'no cars from \'30 - beware sql injection, the call should return null');
 
-            cardb.getAveragePrice('"30', (err, avg) => {
-              ok(err != null, 'no cars from "30 - beware sql injection');
-              ok(avg == null, 'in case of error, must not return an average');
-              start();
-              clearTimeout(timeout);
-            });
-          });
-        });
-      });
-    });
+      avg = await cardb.getAveragePrice('"30');
+      strictEqual(avg, null, 'no cars from "30 - beware sql injection, the call should return null');
+    } catch (e) {
+      console.error(e);
+      ok(false, 'Error getting averages: ' + e);
+    }
+
+    start();
   },
 );
-
-
-function checkError(msg, err, timeout) {
-  if (err) {
-    ok(false, 'Error ' + msg + ': ' + err);
-    if (timeout) clearTimeout(timeout);
-    start();
-    return true;
-  }
-
-  ok(true, 'Success ' + msg);
-  return false;
-}
