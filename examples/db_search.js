@@ -18,7 +18,7 @@ async function main() {
   for (const p of people) {
     console.log(p.fname + ' ' + p.lname + '  ' + p.phone);
   }
-  console.log(`total ${people.length} persons matching "${searchString}".`);
+  console.log(`There are ${people.length} people matching "${searchString}".`);
 
   // close database connections that otherwise prevent Node from exiting
   contacts.shutDown();

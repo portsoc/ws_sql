@@ -3,6 +3,7 @@ ws_sql
 
 An intro to using an SQL database with Node.js.
 
+See also the examples/README.md file for more details.
 
 Running Tests
 -------------
@@ -34,7 +35,12 @@ code and the test framework and then run the tests from the command line:
   npm install
   ```
 
-3. Run the tests by typing:
+3. To prepare the database:
+  ```bash
+  npm run initsql
+  ```
+
+4. Run the tests by typing:
 
   ```bash
   npm test

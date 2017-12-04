@@ -12,22 +12,22 @@ module.exports.randomLastName = function () {
 };
 
 const lnames = [
-  'Adkinson', 'Banaszak', 'Bernabe', 'Blasi', 'Brackens', 'Branco',
+  'Antilles', 'Banaszak', 'Bernabe', 'Biggs', 'Brackens', 'Branco',
   'Breece', 'Burda', 'Clinger', 'Clontz', 'Copland', 'Cottle', 'Croston', 'Culler',
-  'Debose', 'Dees', 'Fairbairn', 'Friedt', 'Gillman', 'Havis', 'Hearon', 'Honore',
+  'Debose', 'Dees', 'Fairbairn', 'Friedt', 'Gillman', 'Hutch', 'Hearon', 'Honore',
   'Kabel', 'Labombard', 'Lau', 'Ledet', 'Leverett', 'Lewandowski', 'Libby', 'Lotz',
-  'Mclennon', 'Mixson', 'Morvant', 'Noble', 'Oakley', 'Ocheltree', 'Roscoe',
-  'Rudman', 'Shaddix', 'Shiflett', 'Sinclair', 'Suchan', 'Swader', 'Tannehill',
-  'Tito', 'Toki', 'Vizcaino', 'Woodburn', 'Yates', 'Zona',
+  'Mclennon', 'Mixson', 'Morvant', 'Noble', 'Oakley', 'Palpatine', 'Roscoe', 'Ren',
+  'Rudman', 'Shaddix', 'Solo', 'Sinclair', 'Sloane', 'Skywalker', 'Tarkin',
+  'Tito', 'Tyrie', 'Vizcaino', 'Wedge', 'Yates', 'Zona',
 ];
 
 
 const fnames = [
-  'Amelia', 'Armandina', 'Austin', 'Ayako', 'Barrett', 'Bethel',
-  'Chang', 'Columbus', 'Cori', 'Debi', 'Delinda', 'Estela', 'Frederick', 'Gertrud',
-  'Gillian', 'Graham', 'Hortensia', 'Indira', 'Irish', 'Jazmine', 'Jeromy',
-  'Karmen', 'Kathline', 'Kenda', 'Laticia', 'Liberty', 'Ling', 'Lourie', 'Maggie',
+  'Amelia', 'Armandina', 'Anakin', 'Ayako', 'Barrett', 'Bethel',
+  'Chang', 'Columbus', 'Chewbacca', 'Debi', 'Delinda', 'Estela', 'Frederick',
+  'Gillian', 'Graham', 'Han', 'Indira', 'Irish', 'Jazmine', 'Jeromy',
+  'Kylo', 'Kathline', 'Rey', 'Laticia', 'Leia', 'Luke', 'Lourie', 'Maggie',
   'Manuel', 'Meta', 'Nicola', 'Olivia', 'Renda', 'Robbyn', 'Ruben', 'Rudolf',
-  'Santina', 'Seema', 'Sheila', 'Sheree', 'Stefany', 'Steve', 'Sumiko', 'Tayna',
-  'Theodore', 'Veola', 'Vickie', 'Victor', 'Yoshie',
+  'Santina', 'Seema', 'Sheila', 'Sheev', 'Stefany', 'Steve', 'Sumiko', 'Tayna',
+  'Theodore', 'Veola', 'Vickie', 'Victor', 'Wilhuff', 'Yoshie',
 ];

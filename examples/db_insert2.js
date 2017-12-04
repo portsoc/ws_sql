@@ -9,11 +9,14 @@ async function main() {
   const p1 = newRandomPerson();
   const p2 = newRandomPerson();
 
+  let count = await contacts.getLength();
+  console.log(`Initially there are ${count} contacts.`);
+
   await contacts.insertMultiple([p1, p2]);
 
   // for output, let's just log how many we know now
-  const count = await contacts.getLength();
-  console.log('now know ' + count + ' contacts');
+  count = await contacts.getLength();
+  console.log(`On completion there are ${count} contacts.`);
 
   // close database connections that otherwise prevent Node from exiting
   contacts.shutDown();

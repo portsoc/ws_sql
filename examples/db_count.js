@@ -6,7 +6,7 @@ const contacts = require('./sql-contact-list');
 
 async function main() {
   const count = await contacts.getLength();
-  console.log('now know ' + count + ' contacts');
+  console.log(`There are ${count} contacts.`);
 
   // close database connections that otherwise prevent Node from exiting
   contacts.shutDown();

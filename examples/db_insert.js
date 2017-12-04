@@ -12,7 +12,7 @@ async function main() {
   const phone = '0' + Math.floor(Math.random()*8999999999+1000000000); // random 10-digit number
 
   await contacts.insert(fname, lname, phone);
-  console.log('inserted ' + fname + ' ' + lname);
+  console.log(`Inserted ${fname} ${lname}`);
 
   // close database connections that otherwise prevent Node from exiting
   contacts.shutDown();
