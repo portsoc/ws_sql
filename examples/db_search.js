@@ -16,7 +16,7 @@ async function main() {
   const people = await contacts.search(searchString);
 
   for (const p of people) {
-    console.log(p.fname + ' ' + p.lname + '  ' + p.phone);
+    console.log(`${p.fname} ${p.lname} ${p.phone}`);
   }
   console.log(`There are ${people.length} people matching "${searchString}".`);
 
