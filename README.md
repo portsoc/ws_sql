@@ -40,13 +40,15 @@ code and the test framework and then run the tests from the command line:
   npm run initsql
   ```
 
-4. Run the tests by typing:
+4. **Inside `test.js` you will find helpful comments that tell you what the tests expect.**
+
+5. Run the tests by typing:
 
   ```bash
   npm test
   ```
 
-4. **Inside `test.js` you will find helpful comments that tell you what the tests expect.**
+  If the tests fail to finish on their own (especially possible before you implement `shutdown`), press `ctrl-c` to stop the script.
 
 Git: A recommendation
 ----------------------
