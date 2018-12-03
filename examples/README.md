@@ -26,6 +26,11 @@ use the interface to do trivial tasks with the contact list.
   * search
   * shutDown
 
+To prepare the database to run the examples:
+```bash
+npm run initsql
+```
+
 Run these examples with `node`, for example like this:
 
 ```bash

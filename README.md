@@ -35,14 +35,9 @@ code and the test framework and then run the tests from the command line:
   npm install
   ```
 
-3. To prepare the database:
-  ```bash
-  npm run initsql
-  ```
+3. **Inside `test.js` you will find helpful comments that tell you what the tests expect.**
 
-4. **Inside `test.js` you will find helpful comments that tell you what the tests expect.**
-
-5. Run the tests by typing:
+4. Run the tests by typing:
 
   ```bash
   npm test

@@ -24,7 +24,9 @@ const mysql = require('mysql2/promise');
  *     with the call to `mysql.createConnection()`.
  *
  * Put your database initialization SQL code in `worksheet/cardb_init.sql`.
- * Run the database initialization code in your MySQL so your database is ready for testing.
+ * Run the database initialization code in your MySQL so your database is
+ * ready for testing. Feel free to add a new script in `package.json` that
+ * will run your DB initialization code (this is not required).
  *
  * Put your database configuration in `worksheet/config.json`.
  * Inside the `mysql` object in `config.json` you should have
